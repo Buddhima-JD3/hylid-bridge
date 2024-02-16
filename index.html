@@ -3,20 +3,59 @@
 <head>
   <title>Miniprogram JSAPI Demo</title>
   <script src="https://cdn.jsdelivr.net/gh/Buddhima-JD3/mini-bridge@master/index.js"></script>
-
 </head>
 <body>
   <div>
     <button id="alert">alert</button>
   </div>
   <script>
-    // Use a function to check if `my` is defined and then set up the button click event
-    function setupMyButton() {
-        var alertButton = document.getElementById('alert');
-        alertButton.addEventListener('click', function() {
-          const data = { message: 'Hello from my.alert!' }; // Adjust data as necessary
-          my.getMyAuthCode(data);
+    document.addEventListener('DOMContentLoaded', function() {
+      // Assuming `my` is globally accessible and `initiate` is a method of `my`
+      if (window.my && typeof my.initiate === 'function') {
+        // Simulating the Angular service method calls with callbacks
+        my.initiate({
+          'AuthCode': function(data) {
+            // Implement getToken functionality here
+            console.log('AuthCode received:', data);
+          },
+          'UserConsentData': function(data) {
+            // Implement displayUserConsentDetails functionality here
+            console.log('UserConsentData received:', data);
+          },
+          'TradePayData': function(data) {
+            // Implement displayTransactionDetails functionality here
+            console.log('TradePayData received:', data);
+          }
         });
+      }
+
+      // Simulate Angular route query params subscription
+      // Check for 'code' query parameter in the URL
+      if (!new URLSearchParams(window.location.search).has('code')) {
+        console.log('Invoke SDK');
+        const data = {
+          clientId:  'mini-app', // Replace with your clientId
+          redirectUrl: 'https://buddhima-jd3.github.io/hylid-bridge/'// Replace with your redirectUrl
+        };
+        // Ensure my.getMyAuthCode is a function before calling
+        if (window.my && typeof my.getMyAuthCode === 'function') {
+          my.getMyAuthCode(data);
+        }
+      }
+
+      // Setup click event listener for your button
+      setupMyButton();
+    });
+
+    function setupMyButton() {
+      var alertButton = document.getElementById('alert');
+      alertButton.addEventListener('click', function() {
+        const data = { clientId: 'mini-app', redirectUrl: 'https://buddhima-jd3.github.io/hylid-bridge/' };
+        // Ensure my.getMyAuthCode is a function before calling
+        if (window.my && typeof my.getMyAuthCode === 'function') {
+          my.getMyAuthCode(data);
+        }
+      });
     }
   </script>
 </body>
