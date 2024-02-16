@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Miniprogram JSAPI Demo</title>
+  <!-- <script src="./custom.js" defer></script> -->
+  <script src="https://cdn.jsdelivr.net/gh/Buddhima-JD3/mini-bridge@master/index.js"></script>
+
+</head>
+<body>
+  <div>
+    <button id="alert">alert</button>
+  </div>
+  <script>
+    // Use a function to check if `my` is defined and then set up the button click event
+    function setupMyButton() {
+        var alertButton = document.getElementById('alert');
+        alertButton.addEventListener('click', function() {
+          const data = { message: 'Hello from my.alert!' }; // Adjust data as necessary
+          my.getMyAuthCode(data);
+        });
+    }
+
+    // Call the setup function when the window load event fires
+    // This ensures that all deferred scripts are loaded
+    window.addEventListener('load', setupMyButton);
+  </script>
+</body>
+</html>
