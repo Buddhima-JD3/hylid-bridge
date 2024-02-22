@@ -6,28 +6,52 @@
 </head>
 <body>
   <div>
-    <button id="alert">alert</button>
+    <button id="alert" onclick="setupMyButton();">alert</button>
   </div>
   <script>
+    var minidata;
     document.addEventListener('DOMContentLoaded', function() {
-      // Assuming `my` is globally accessible and `initiate` is a method of `my`
-      if (window.my && typeof my.initiate === 'function') {
-        // Simulating the Angular service method calls with callbacks
-        my.initiate({
-          'AuthCode': function(data) {
-            // Implement getToken functionality here
-            console.log('AuthCode received:', data);
-          },
-          'UserConsentData': function(data) {
-            // Implement displayUserConsentDetails functionality here
-            console.log('UserConsentData received:', data);
-          },
-          'TradePayData': function(data) {
-            // Implement displayTransactionDetails functionality here
-            console.log('TradePayData received:', data);
-          }
-        });
+  if (window.my && typeof my.initiate === 'function') {
+    my.initiate({
+      'AuthCode': {
+        success: function(data) {
+          console.log('AuthCode received:', data);
+          // Dispatch custom event for success
+          document.dispatchEvent(new CustomEvent('authCodeSuccess', { detail: data }));
+        },
+        fail: function(err) {
+          console.error('Auth Code Sync Error:', err);
+          // Dispatch custom event for failure
+          document.dispatchEvent(new CustomEvent('authCodeFailure', { detail: err }));
+        }
+      },
+      'UserConsentData': {
+        success: function(data) {
+          console.log('UserConsentData received:', data);
+          // Dispatch custom event for success
+          document.dispatchEvent(new CustomEvent('userConsentDataSuccess', { detail: data }));
+        },
+        fail: function(err) {
+          console.error('User Consent Data Sync Error:', err);
+          // Dispatch custom event for failure
+          document.dispatchEvent(new CustomEvent('userConsentDataFailure', { detail: err }));
+        }
+      },
+      'TradePayData': {
+        success: function(data) {
+          console.log('TradePayData received:', data);
+          // Dispatch custom event for success
+          document.dispatchEvent(new CustomEvent('tradePayDataSuccess', { detail: data }));
+        },
+        fail: function(err) {
+          console.error('Trade Pay Data Sync Error:', err);
+          // Dispatch custom event for failure
+          document.dispatchEvent(new CustomEvent('tradePayDataFailure', { detail: err }));
+        }
       }
+    });
+  }
+
 
       // Simulate Angular route query params subscription
       // Check for 'code' query parameter in the URL
@@ -39,12 +63,10 @@
         };
         // Ensure my.getMyAuthCode is a function before calling
         if (window.my && typeof my.getMyAuthCode === 'function') {
-          my.getMyAuthCode(JSON.stringify(data));
+          my.getAuthCode(JSON.stringify(data));
         }
       }
 
-      // Setup click event listener for your button
-      setupMyButton();
     });
 
     function setupMyButton() {
@@ -53,7 +75,7 @@
         const data = { clientId: 'mini-app', redirectUrl: 'https://buddhima-jd3.github.io/hylid-bridge/' };
         // Ensure my.getMyAuthCode is a function before calling
         if (window.my && typeof my.getMyAuthCode === 'function') {
-          my.getMyAuthCode(JSON.stringify(data));
+          my.getAuthCode(JSON.stringify(data));
         }
       });
     }
