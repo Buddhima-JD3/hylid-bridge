@@ -1,75 +1,41 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Miniprogram JSAPI Demo</title>
   <script src="https://cdn.jsdelivr.net/gh/Buddhima-JD3/wma-bridge@master/index.js" type="module"></script>
 </head>
 <body>
-  <div>
-    <button id="alert" onclick="setupMyButton();">alert</button>
-  </div>
+  <!-- Button to trigger getAuthCode -->
+  <button id="getAuthCodeBtn">Get Auth Code</button>
+
   <script type="module">
-    document.addEventListener('DOMContentLoaded', function() {
-      // Initialize the 'my' object with callbacks
+    document.addEventListener('DOMContentLoaded', function () {
       if (window.my && typeof my.initiate === 'function') {
         my.initiate({
           'AuthCode': {
-            success: function(data) {
+            success: function (data) {
               console.log('AuthCode received:', data);
               document.dispatchEvent(new CustomEvent('authCodeSuccess', { detail: data }));
             },
-            fail: function(err) {
+            fail: function (err) {
               console.error('Auth Code Sync Error:', err);
               document.dispatchEvent(new CustomEvent('authCodeFailure', { detail: err }));
             }
           },
-          'UserConsentData': {
-            success: function(data) {
-              console.log('UserConsentData received:', data);
-              document.dispatchEvent(new CustomEvent('userConsentDataSuccess', { detail: data }));
-            },
-            fail: function(err) {
-              console.error('User Consent Data Sync Error:', err);
-              document.dispatchEvent(new CustomEvent('userConsentDataFailure', { detail: err }));
-            }
-          },
-          'TradePayData': {
-            success: function(data) {
-              console.log('TradePayData received:', data);
-              document.dispatchEvent(new CustomEvent('tradePayDataSuccess', { detail: data }));
-            },
-            fail: function(err) {
-              console.error('Trade Pay Data Sync Error:', err);
-              document.dispatchEvent(new CustomEvent('tradePayDataFailure', { detail: err }));
-            }
-          }
         });
       }
 
-      // Check for 'code' query parameter in the URL
-      if (!new URLSearchParams(window.location.search).has('code')) {
-        // Call getAuthCode directly without JSON.stringify, as your function expects an object
+      // Event listener for button click
+      document.getElementById('getAuthCodeBtn').addEventListener('click', function () {
         if (window.my && typeof my.getAuthCode === 'function') {
-          console.log('Invoke SDK.');
           const data = {
-          clientId: 'mini-app', // Replace with your clientId
-          redirectUrl: 'https://buddhima-jd3.github.io/hylid-bridge/' // Replace with your redirectUrl
-        };
-          my.getAuthCode(data);
-        }
-      }
-    });
-
-    function setupMyButton() {
-      var alertButton = document.getElementById('alert');
-      alertButton.addEventListener('click', function() {
-        const data = { clientId: 'mini-app', redirectUrl: 'https://buddhima-jd3.github.io/hylid-bridge/' };
-        // Call getAuthCode correctly without JSON.stringify
-        if (window.my && typeof my.getAuthCode === 'function') {
+            clientId: 'clientId', // Replace with your actual clientId
+            redirectUrl: 'redirectUrl' // Replace with your actual redirectUrl
+          };
           my.getAuthCode(data);
         }
       });
-    }
+
+    });
   </script>
 </body>
 </html>
